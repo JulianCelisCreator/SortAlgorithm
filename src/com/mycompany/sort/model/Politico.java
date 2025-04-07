@@ -1,5 +1,6 @@
 package com.mycompany.sort.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -13,9 +14,9 @@ public class Politico {
     private static int ultimoID = 1;
     private int id;
     private int dinero;
-    private Date fecha;
+    private LocalDate fecha;
 
-    public Politico(int dinero, Date fecha) {
+    public Politico(int dinero, LocalDate fecha) {
         this.id = ultimoID++;
         this.dinero = dinero;
         this.fecha = fecha;
