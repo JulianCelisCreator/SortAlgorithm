@@ -6,7 +6,7 @@ import java.util.Comparator;
 
 
 public class QuickSortingStrategy implements SortingStrategy{
-    private int iterations;
+    private long iterations;
 
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {

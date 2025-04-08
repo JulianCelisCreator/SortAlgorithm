@@ -31,17 +31,22 @@ public class SortingController {
         try {
             while (true) {
                 Politico[] data = dataGenerator.generateData("RANDOM", currentSize);
+                System.out.println("Tamaño: " + currentSize);
                 for (SortingStrategy strategy : strategies) {
                     Politico[] copy = Arrays.copyOf(data, data.length);
                     SortResult result = strategy.sort(copy, PoliticoComparator.porDinero());
                     results.add(result);
+                    System.out.println(strategy.getClass().getSimpleName() + " -> " +
+                            "Iteraciones: " + result.getIterations() + ", Tiempo: " + result.getTimeElapsedMinutes() + "ns");
                 }
+                System.out.println("-------------");
                 currentSize = (int) (currentSize * growthFactor);
             }
         } catch (OutOfMemoryError e) {
             System.out.println("Memoria llena en tamaño: " + currentSize);
         }
     }
+
 
     public void exportResultsToPDF() {
         // Implementación usando iText o similar

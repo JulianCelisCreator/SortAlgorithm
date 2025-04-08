@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import com.mycompany.sort.model.politico.Politico;
 public class MergeSortingStrategy implements SortingStrategy {
-    private int iterations;
+    private long iterations;
 
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {

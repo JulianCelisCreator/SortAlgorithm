@@ -7,7 +7,7 @@ import com.mycompany.sort.model.politico.Politico;
 public class InsertionSortingStrategy implements SortingStrategy{
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
-        int iterations = 0;
+        long iterations = 0;
         long start = System.nanoTime();
         int n = arr.length;
         for (int i = 1; i < n; i++) {

@@ -7,7 +7,7 @@ import java.util.Comparator;
 public class SelectionSortingStrategy implements SortingStrategy {
     @Override
     public SortResult sort (Politico[] arr, Comparator<Politico> comparator){
-        int iterations = 0;
+        long iterations = 0;
         long start = System.nanoTime();
         int n = arr.length;
         for (int i = 0; i < n - 1; i++) {
