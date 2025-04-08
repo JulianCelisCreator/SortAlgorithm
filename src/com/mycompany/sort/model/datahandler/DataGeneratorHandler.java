@@ -9,5 +9,5 @@ public abstract class DataGeneratorHandler {
         this.nextHandler = nextHandler;
     }
 
-    public abstract Politico[] generateData(String type, int n);
+    public abstract Politico[] generateData(String type, int size);
 }

@@ -31,9 +31,26 @@ public class SortingController {
     }
 
     public void runAnalysis(int initialSize, double growthFactor) {
-        List<String> dataCases = List.of("SORTED", "INVERSE", "PARTIAL");
-        for (String dataCase : dataCases) {
-            analyzeDataCase(dataCase, initialSize, growthFactor);
+        List<String> dataCases = List.of("SORTED", "INVERSE", "RANDOM"); // Casos corregidos
+        int currentSize = initialSize;
+
+        try {
+            while (true) {
+                System.out.println("\n===== TAMAÑO ACTUAL: " + currentSize + " =====");
+
+                // Ejecutar todos los casos para el tamaño actual
+                for (String dataCase : dataCases) {
+                    System.out.println("\n=== CASO: " + dataCase + " ===");
+                    Politico[] data = dataGenerator.generateData(dataCase, currentSize); // Misma población
+
+                    analyzeArrayResults(data, currentSize);
+                    analyzeMatrixResults(data, currentSize);
+                }
+
+                currentSize = (int) (currentSize * growthFactor); // Incrementar tamaño después de todos los casos
+            }
+        } catch (OutOfMemoryError e) {
+            System.out.println("Memoria llena en tamaño: " + currentSize);
         }
     }
 

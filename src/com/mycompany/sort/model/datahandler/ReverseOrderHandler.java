@@ -2,16 +2,24 @@ package com.mycompany.sort.model.datahandler;
 
 import com.mycompany.sort.model.politico.Politico;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class ReverseOrderHandler extends DataGeneratorHandler {
     @Override
-    public Politico[] generateData(String type, int n) {
-        if (!type.equalsIgnoreCase("REVERSE") && nextHandler != null) {
-            return nextHandler.generateData(type, n);
+    public Politico[] generateData(String type, int size) {
+        if ("INVERSE".equalsIgnoreCase(type)) {
+            // Generar datos ordenados y luego invertirlos
+            Politico[] data = new SortedOrderHandler().generateData("SORTED", size);
+            Collections.reverse(Arrays.asList(data));
+            return data;
         }
-        Politico[] politicians = new Politico[n];
-        for (int i = 0; i < n; i++) {
-            politicians[i] = new Politico(1000000 - (i * 1000), RandomDateGenerator.generateRandomDate());
+
+        // Delegar al siguiente manejador si no es "INVERSE"
+        if (nextHandler != null) {
+            return nextHandler.generateData(type, size);
         }
-        return politicians;
+
+        throw new IllegalArgumentException("Tipo no soportado: " + type);
     }
 }
