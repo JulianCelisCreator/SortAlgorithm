@@ -12,7 +12,6 @@ public class QuickSortingStrategy implements SortingStrategy {
         iterations = 0;
         long start = System.nanoTime();
 
-        // Versión iterativa usando pila
         Stack<Integer> stack = new Stack<>();
         stack.push(0);
         stack.push(arr.length - 1);
@@ -24,11 +23,8 @@ public class QuickSortingStrategy implements SortingStrategy {
             if (low < high) {
                 int pivotIndex = partition(arr, low, high, comparator);
 
-                // Subarray izquierdo
                 stack.push(low);
                 stack.push(pivotIndex - 1);
-
-                // Subarray derecho
                 stack.push(pivotIndex + 1);
                 stack.push(high);
             }
@@ -39,9 +35,20 @@ public class QuickSortingStrategy implements SortingStrategy {
     }
 
     private int partition(Politico[] arr, int low, int high, Comparator<Politico> comparator) {
-        Politico pivot = arr[high]; // Pivote en último elemento
-        int i = low - 1;
+        // Paso 1: Selección de pivote con mediana de tres
+        int mid = low + (high - low) / 2;
 
+        // Ordenar low, mid, high
+        if (comparator.compare(arr[low], arr[mid]) > 0) swap(arr, low, mid);
+        if (comparator.compare(arr[low], arr[high]) > 0) swap(arr, low, high);
+        if (comparator.compare(arr[mid], arr[high]) > 0) swap(arr, mid, high);
+
+        // Mover el pivote (mediana) a la posición high
+        swap(arr, mid, high);
+        Politico pivot = arr[high];
+
+        // Paso 2: Partición estándar
+        int i = low - 1;
         for (int j = low; j < high; j++) {
             iterations++;
             if (comparator.compare(arr[j], pivot) <= 0) {
