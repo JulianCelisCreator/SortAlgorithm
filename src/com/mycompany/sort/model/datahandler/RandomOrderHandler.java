@@ -1,4 +1,6 @@
-package com.mycompany.sort.model;
+package com.mycompany.sort.model.datahandler;
+
+import com.mycompany.sort.model.politico.Politico;
 
 import java.util.Random;
 

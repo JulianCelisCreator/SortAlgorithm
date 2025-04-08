@@ -1,4 +1,4 @@
-package com.mycompany.sort.model;
+package com.mycompany.sort.model.datahandler;
 
 import java.time.LocalDate;
 import java.util.Random;

@@ -1,7 +1,6 @@
-package com.mycompany.sort.model;
+package com.mycompany.sort.model.politico;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Clase que modela a un politico de APOCO
@@ -27,6 +26,18 @@ public class Politico {
     }
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getDinero() {
+        return dinero;
+    }
+
+    public void setDinero(int dinero) {
+        this.dinero = dinero;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
     }
 }
 

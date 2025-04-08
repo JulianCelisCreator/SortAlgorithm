@@ -1,9 +1,11 @@
-package com.mycompany.sort.model;
+package com.mycompany.sort.model.datahandler;
+
+import com.mycompany.sort.model.politico.Politico;
 
 public class ReverseOrderHandler extends DataGeneratorHandler {
     @Override
     public Politico[] generateData(String type, int n) {
-        if (!type.equals("REVERSE") && nextHandler != null) {
+        if (!type.equalsIgnoreCase("REVERSE") && nextHandler != null) {
             return nextHandler.generateData(type, n);
         }
         Politico[] politicians = new Politico[n];

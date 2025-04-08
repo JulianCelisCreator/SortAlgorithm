@@ -1,4 +1,4 @@
-package com.mycompany.sort.model;
+package com.mycompany.sort.model.SortingStrategy;
 
 public class SortResult {
     private int iterations;
