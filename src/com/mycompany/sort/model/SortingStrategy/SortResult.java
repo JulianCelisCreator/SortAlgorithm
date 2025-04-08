@@ -2,13 +2,14 @@ package com.mycompany.sort.model.SortingStrategy;
 
 public class SortResult {
     private long iterations;
-    private long timeElapsedMillis; // Tiempo transcurrido en milisegundos
+    private long timeElapsedMillis;  // Tiempo en milisegundos
 
     public SortResult(long iterations, long timeElapsedMillis) {
         this.iterations = iterations;
         this.timeElapsedMillis = timeElapsedMillis;
     }
 
+    // Getters y Setters
     public long getIterations() {
         return iterations;
     }
@@ -25,21 +26,30 @@ public class SortResult {
         this.timeElapsedMillis = timeElapsedMillis;
     }
 
-    // Método para obtener el tiempo transcurrido en segundos con decimales
+    // Conversiones útiles
     public double getTimeElapsedSeconds() {
-        return timeElapsedMillis / 1000.0;
+        return timeElapsedMillis / 1_000.0;
     }
 
-    // Método para obtener el tiempo transcurrido en minutos con decimales
     public double getTimeElapsedMinutes() {
-        return timeElapsedMillis / 60000.0;
+        return timeElapsedMillis / 60_000.0;
     }
 
-    // Método para obtener una representación formateada del tiempo transcurrido
+    // Formato legible
     public String getFormattedTime() {
-        long minutes = timeElapsedMillis / 60000;
-        long seconds = (timeElapsedMillis % 60000) / 1000;
-        long milliseconds = timeElapsedMillis % 1000;
+        long totalMillis = timeElapsedMillis;
+        long minutes = totalMillis / 60_000;
+        long seconds = (totalMillis % 60_000) / 1_000;
+        long milliseconds = totalMillis % 1_000;
         return String.format("%d min, %d sec, %d ms", minutes, seconds, milliseconds);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Iteraciones: %,d | Tiempo: %s",
+                iterations,
+                getFormattedTime()
+        );
     }
 }

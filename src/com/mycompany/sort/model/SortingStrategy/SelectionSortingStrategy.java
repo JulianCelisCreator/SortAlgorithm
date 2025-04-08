@@ -8,7 +8,7 @@ public class SelectionSortingStrategy implements SortingStrategy {
     @Override
     public SortResult sort (Politico[] arr, Comparator<Politico> comparator){
         long iterations = 0;
-        long start = System.nanoTime();
+        long start = System.currentTimeMillis();
         int n = arr.length;
         for (int i = 0; i < n - 1; i++) {
             int minIndex = i;

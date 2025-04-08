@@ -1,6 +1,8 @@
 package com.mycompany.sort.model.SortingStrategy;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.Currency;
 
 import com.mycompany.sort.model.politico.Politico;
 public class MergeSortingStrategy implements SortingStrategy {
@@ -9,11 +11,11 @@ public class MergeSortingStrategy implements SortingStrategy {
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         iterations = 0;
-        long start = System.nanoTime();
+        long start = System.currentTimeMillis();
 
         mergeSort(arr, 0, arr.length - 1, comparator);
 
-        long end = System.nanoTime();
+        long end = System.currentTimeMillis();
         return new SortResult(iterations, end - start);
     }
 

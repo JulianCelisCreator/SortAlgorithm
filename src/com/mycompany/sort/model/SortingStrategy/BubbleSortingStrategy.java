@@ -8,7 +8,7 @@ public class BubbleSortingStrategy implements SortingStrategy {
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         long iterations = 0;
-        long start = System.nanoTime();
+        long start = System.currentTimeMillis();
         boolean swapped;
         int n = arr.length;
 
@@ -25,8 +25,7 @@ public class BubbleSortingStrategy implements SortingStrategy {
             }
             if (!swapped) break; // Mover fuera del bucle interno
         }
-        long end = System.nanoTime();
-        long timeElapsed = (end - start);
+        long end = System.currentTimeMillis();
         return new SortResult(iterations, end - start);
     }
 }

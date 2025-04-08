@@ -11,11 +11,11 @@ public class QuickSortingStrategy implements SortingStrategy{
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         iterations = 0;
-        long start = System.nanoTime();
+        long start = System.currentTimeMillis();
 
         quickSort(arr, 0, arr.length - 1, comparator);
 
-        long end = System.nanoTime();
+        long end = System.currentTimeMillis();
         return new SortResult(iterations, end - start);
     }
 

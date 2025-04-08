@@ -11,8 +11,8 @@ public class DataGeneratorChain {
 
     public DataGeneratorChain() {
         this.chain = new RandomOrderHandler();
-        PartialOrderHandler partial = new PartialOrderHandler();
-        ReverseOrderHandler reverse = new ReverseOrderHandler();
+        DataGeneratorHandler partial = new PartialOrderHandler();
+        DataGeneratorHandler reverse = new ReverseOrderHandler();
         chain.setNextHandler(partial);
         partial.setNextHandler(reverse);
     }
