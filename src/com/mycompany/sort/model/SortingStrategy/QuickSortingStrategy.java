@@ -1,34 +1,45 @@
 package com.mycompany.sort.model.SortingStrategy;
 
 import com.mycompany.sort.model.politico.Politico;
-
 import java.util.Comparator;
+import java.util.Stack;
 
-
-public class QuickSortingStrategy implements SortingStrategy{
+public class QuickSortingStrategy implements SortingStrategy {
     private long iterations;
 
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         iterations = 0;
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
 
-        quickSort(arr, 0, arr.length - 1, comparator);
+        // Versión iterativa usando pila
+        Stack<Integer> stack = new Stack<>();
+        stack.push(0);
+        stack.push(arr.length - 1);
 
-        long end = System.currentTimeMillis();
-        return new SortResult(iterations, end - start);
-    }
+        while (!stack.isEmpty()) {
+            int high = stack.pop();
+            int low = stack.pop();
 
-    private void quickSort(Politico[] arr, int low, int high, Comparator<Politico> comparator) {
-        if (low < high) {
-            int pi = partition(arr, low, high, comparator);
-            quickSort(arr, low, pi - 1, comparator);
-            quickSort(arr, pi + 1, high, comparator);
+            if (low < high) {
+                int pivotIndex = partition(arr, low, high, comparator);
+
+                // Subarray izquierdo
+                stack.push(low);
+                stack.push(pivotIndex - 1);
+
+                // Subarray derecho
+                stack.push(pivotIndex + 1);
+                stack.push(high);
+            }
         }
+
+        long elapsedMillis = (System.nanoTime() - start) / 1_000_000;
+        return new SortResult(iterations, elapsedMillis);
     }
 
     private int partition(Politico[] arr, int low, int high, Comparator<Politico> comparator) {
-        Politico pivot = arr[high];
+        Politico pivot = arr[high]; // Pivote en último elemento
         int i = low - 1;
 
         for (int j = low; j < high; j++) {
@@ -38,7 +49,6 @@ public class QuickSortingStrategy implements SortingStrategy{
                 swap(arr, i, j);
             }
         }
-
         swap(arr, i + 1, high);
         return i + 1;
     }
@@ -51,6 +61,6 @@ public class QuickSortingStrategy implements SortingStrategy{
 
     @Override
     public String getName() {
-        return "Quick Sorting"; // Nombre legible del algoritmo
+        return "Quick Sort";
     }
 }

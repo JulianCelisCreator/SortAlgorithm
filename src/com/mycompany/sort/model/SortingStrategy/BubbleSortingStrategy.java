@@ -3,12 +3,13 @@ package com.mycompany.sort.model.SortingStrategy;
 import com.mycompany.sort.model.politico.Politico;
 
 import java.util.Comparator;
+import java.util.Timer;
 
 public class BubbleSortingStrategy implements SortingStrategy {
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         long iterations = 0;
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         boolean swapped;
         int n = arr.length;
 
@@ -25,8 +26,9 @@ public class BubbleSortingStrategy implements SortingStrategy {
             }
             if (!swapped) break; // Mover fuera del bucle interno
         }
-        long end = System.currentTimeMillis();
-        return new SortResult(iterations, end - start);
+        long end = System.nanoTime() - start;
+        long elapsedMillis = end / 1_000_000; //
+        return new SortResult(iterations, elapsedMillis);
     }
 
     @Override

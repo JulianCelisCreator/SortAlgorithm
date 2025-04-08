@@ -11,12 +11,13 @@ public class MergeSortingStrategy implements SortingStrategy {
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         iterations = 0;
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
 
         mergeSort(arr, 0, arr.length - 1, comparator);
 
-        long end = System.currentTimeMillis();
-        return new SortResult(iterations, end - start);
+        long end = System.nanoTime() - start;
+        long elapsedMillis = end / 1_000_000; //
+        return new SortResult(iterations, elapsedMillis);
     }
 
     private void mergeSort(Politico[] arr, int left, int right, Comparator<Politico> comparator) {

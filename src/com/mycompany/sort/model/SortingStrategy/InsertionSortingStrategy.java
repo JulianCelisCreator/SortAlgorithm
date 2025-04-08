@@ -8,7 +8,7 @@ public class InsertionSortingStrategy implements SortingStrategy{
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         long iterations = 0;
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         int n = arr.length;
         for (int i = 1; i < n; i++) {
             Politico key = arr[i];
@@ -26,8 +26,9 @@ public class InsertionSortingStrategy implements SortingStrategy{
 
             arr[j + 1] = key;
         }
-        long end = System.currentTimeMillis();
-        return new SortResult(iterations, end - start);
+        long end = System.nanoTime() - start;
+        long elapsedMillis = end / 1_000_000; //
+        return new SortResult(iterations, elapsedMillis);
     }
 
     @Override
