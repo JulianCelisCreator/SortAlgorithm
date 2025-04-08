@@ -59,4 +59,9 @@ public class MergeSortingStrategy implements SortingStrategy {
             arr[k++] = rightArr[j++];
         }
     }
+
+    @Override
+    public String getName() {
+        return "Merge Sorting"; // Nombre legible del algoritmo
+    }
 }

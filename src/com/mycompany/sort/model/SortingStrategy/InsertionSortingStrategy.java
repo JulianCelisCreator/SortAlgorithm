@@ -29,4 +29,9 @@ public class InsertionSortingStrategy implements SortingStrategy{
         long end = System.currentTimeMillis();
         return new SortResult(iterations, end - start);
     }
+
+    @Override
+    public String getName() {
+        return "Insertion Sort"; // Nombre legible del algoritmo
+    }
 }

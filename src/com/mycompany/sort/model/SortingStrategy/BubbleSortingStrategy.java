@@ -28,5 +28,10 @@ public class BubbleSortingStrategy implements SortingStrategy {
         long end = System.currentTimeMillis();
         return new SortResult(iterations, end - start);
     }
+
+    @Override
+    public String getName() {
+        return "Bubble Sort"; // Nombre legible del algoritmo
+    }
 }
 

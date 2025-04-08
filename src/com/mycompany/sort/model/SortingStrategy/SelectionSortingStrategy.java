@@ -30,4 +30,9 @@ public class SelectionSortingStrategy implements SortingStrategy {
         long end = System.nanoTime();
         return new SortResult(iterations, end - start);
     }
+
+    @Override
+    public String getName() {
+        return "Selection sort"; // Nombre legible del algoritmo
+    }
 }

@@ -48,4 +48,9 @@ public class QuickSortingStrategy implements SortingStrategy{
         arr[i] = arr[j];
         arr[j] = temp;
     }
+
+    @Override
+    public String getName() {
+        return "Quick Sorting"; // Nombre legible del algoritmo
+    }
 }
