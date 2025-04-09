@@ -1,79 +1,129 @@
 package com.mycompany.sort.view;
 
-
 import com.mycompany.sort.controller.SortingController;
+import com.mycompany.sort.controller.accumulator.AccumulatorValue;
+import com.mycompany.sort.model.SortingStrategy.SortingStrategy;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.Map;
 
 public class SortingGUI extends JFrame {
     private final SortingController controller;
+    private final JTabbedPane tabbedPane;
+    private final DefaultTableModel arrayTableModel;
+    private final DefaultTableModel matrixTableModel;
 
-    private final JTextField sizeField;
-    private final JTextField growthField;
-    private final JTextArea outputArea;
+    public SortingGUI(SortingController controller) {
+        super("Analizador de Estrategias de Ordenamiento");
+        this.controller = controller;
 
-    public SortingGUI() {
-        controller = new SortingController();
-
-        setTitle("Análisis de Estrategias de Ordenamiento");
-        setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1200, 600);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        // Panel de entrada
-        JPanel inputPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-        inputPanel.setBorder(BorderFactory.createTitledBorder("Parámetros"));
+        // Panel superior
+        JPanel controlPanel = new JPanel();
+        JTextField initialSizeField = new JTextField("1000", 10);
+        JTextField growthFactorField = new JTextField("1.5", 10);
+        JButton startButton = new JButton("Iniciar");
+        JButton stopButton = new JButton("Detener");
 
-        inputPanel.add(new JLabel("Tamaño inicial:"));
-        sizeField = new JTextField("1000");
-        inputPanel.add(sizeField);
+        controlPanel.add(new JLabel("Tamaño inicial:"));
+        controlPanel.add(initialSizeField);
+        controlPanel.add(new JLabel("Factor crecimiento:"));
+        controlPanel.add(growthFactorField);
+        controlPanel.add(startButton);
+        controlPanel.add(stopButton);
+        add(controlPanel, BorderLayout.NORTH);
 
-        inputPanel.add(new JLabel("Factor de crecimiento:"));
-        growthField = new JTextField("1.5");
-        inputPanel.add(growthField);
+        // Tablas
+        tabbedPane = new JTabbedPane();
+        arrayTableModel = createTableModel();
+        matrixTableModel = createTableModel();
 
-        // Botones
-        JButton runButton = new JButton("Ejecutar análisis");
-        runButton.addActionListener(this::handleRunAnalysis);
+        tabbedPane.addTab("Arreglos", new JScrollPane(new JTable(arrayTableModel)));
+        tabbedPane.addTab("Matrices", new JScrollPane(new JTable(matrixTableModel)));
 
-        JButton exportButton = new JButton("Exportar resultados a PDF");
-        exportButton.addActionListener(e -> controller.exportResultsToPDF());
+        add(tabbedPane, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(runButton);
-        buttonPanel.add(exportButton);
+        // Listeners
+        startButton.addActionListener(e -> {
+            try {
+                int initialSize = Integer.parseInt(initialSizeField.getText());
+                double growthFactor = Double.parseDouble(growthFactorField.getText());
 
-        // Salida
-        outputArea = new JTextArea();
-        outputArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(outputArea);
+                new Thread(() -> {
+                    controller.runAnalysis(initialSize, growthFactor);
+                    SwingUtilities.invokeLater(this::updateTables);
+                }).start();
 
-        // Layout principal
-        setLayout(new BorderLayout(10, 10));
-        add(inputPanel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.CENTER);
-        add(scrollPane, BorderLayout.SOUTH);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Valores inválidos", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        stopButton.addActionListener(e -> updateTables());
     }
 
-    private void handleRunAnalysis(ActionEvent e) {
-        try {
-            int size = Integer.parseInt(sizeField.getText());
-            double factor = Double.parseDouble(growthField.getText());
+    private DefaultTableModel createTableModel() {
+        List<SortingStrategy> strategies = controller.getStrategies();
+        String[] columns = new String[1 + strategies.size() * 2];
+        columns[0] = "Caso";
 
-            outputArea.setText("Ejecutando análisis...\n");
-            controller.runAnalysis(size, factor);
-            outputArea.append("¡Análisis completado! Resultados disponibles por consola o PDF.\n");
+        int index = 1;
+        for (SortingStrategy strategy : strategies) {
+            columns[index++] = strategy.getName() + " (Iter)";
+            columns[index++] = strategy.getName() + " (ms)";
+        }
 
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Por favor ingresa valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        return new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+    }
+
+    private void updateTables() {
+        updateTableModel(arrayTableModel, controller.getAccumulatedResults("ARRAY"));
+        updateTableModel(matrixTableModel, controller.getAccumulatedResults("MATRIX"));
+    }
+
+    private void updateTableModel(DefaultTableModel model, Map<String, Map<String, AccumulatorValue>> data) {
+        model.setRowCount(0);
+        List<String> cases = List.of("SORTED", "INVERSE", "RANDOM");
+        List<SortingStrategy> strategies = controller.getStrategies();
+
+        for (String dataCase : cases) {
+            Object[] row = new Object[model.getColumnCount()];
+            row[0] = dataCase;
+
+            Map<String, AccumulatorValue> strategyData = data.get(dataCase);
+            if (strategyData == null) continue;
+
+            int colIndex = 1;
+            for (SortingStrategy strategy : strategies) {
+                AccumulatorValue value = strategyData.get(strategy.getName());
+                if (value != null) {
+                    row[colIndex++] = String.format("%.2f", value.getAverageIterations());
+                    row[colIndex++] = String.format("%.2f", value.getAverageTime());
+                } else {
+                    colIndex += 2;
+                }
+            }
+            model.addRow(row);
         }
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            SortingGUI gui = new SortingGUI();
+            SortingController controller = new SortingController();
+            SortingGUI gui = new SortingGUI(controller);
             gui.setVisible(true);
         });
     }

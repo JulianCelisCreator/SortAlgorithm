@@ -13,6 +13,9 @@ public class SortResult {
                       String strategy,
                       long iterations,
                       long timeElapsedMillis) {
+        if (iterations < 0 || timeElapsedMillis < 0) {
+            throw new IllegalArgumentException("Iteraciones o tiempo no pueden ser negativos");
+        }
         this.type = type;
         this.size = size;
         this.strategy = strategy;

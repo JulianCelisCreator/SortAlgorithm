@@ -7,14 +7,15 @@ public class DataGeneratorChain {
     private DataGeneratorHandler chain;
 
     public DataGeneratorChain() {
-        this.chain = new SortedOrderHandler();
+        // Configurar la cadena correctamente: Sorted -> Reverse -> Random
         DataGeneratorHandler sorted = new SortedOrderHandler();
         DataGeneratorHandler reverse = new ReverseOrderHandler();
-        DataGeneratorHandler random = new RandomOrderHandler(); // Nuevo manejador
+        DataGeneratorHandler random = new RandomOrderHandler();
 
-        chain.setNextHandler(sorted);
         sorted.setNextHandler(reverse);
-        reverse.setNextHandler(random); // Agregar al final de la cadena
+        reverse.setNextHandler(random);
+
+        this.chain = sorted; // La cadena empieza con "sorted"
     }
 
     public Politico[] generateData(String type, int size) {
