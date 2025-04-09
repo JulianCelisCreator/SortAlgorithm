@@ -9,6 +9,12 @@ import com.mycompany.sort.model.politico.Politico;
 import com.mycompany.sort.model.politico.PoliticoComparator;
 import com.mycompany.sort.model.SortingStrategy.SortResult;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -56,8 +62,8 @@ public class SortingController {
      * de entrada y tipos de caso (ordenado, inverso, aleatorio), incrementando el tamaño
      * según el factor de crecimiento especificado.
      *
-     * @param initialSize   Tamaño inicial del conjunto de datos.
-     * @param growthFactor  Factor de crecimiento entre cada iteración.
+     * @param initialSize  Tamaño inicial del conjunto de datos.
+     * @param growthFactor Factor de crecimiento entre cada iteración.
      */
     public void runAnalysis(int initialSize, double growthFactor) {
         List<String> dataCases = List.of("SORTED", "INVERSE", "RANDOM");
@@ -218,9 +224,9 @@ public class SortingController {
     /**
      * Imprime por consola un resultado individual en formato legible.
      *
-     * @param type          Tipo de estructura ("Array" o "Matriz").
-     * @param strategyName  Nombre de la estrategia.
-     * @param result        Resultado detallado.
+     * @param type         Tipo de estructura ("Array" o "Matriz").
+     * @param strategyName Nombre de la estrategia.
+     * @param result       Resultado detallado.
      */
     private void printResult(String type, String strategyName, SortResult result) {
         System.out.printf(
@@ -231,9 +237,5 @@ public class SortingController {
                 result.getIterations(),
                 result.getFormattedTime()
         );
-    }
-
-    public void exportResultsToPdf(String filePath) {
-        com.mycompany.sort.util.PdfExporter.exportToPdf(this.accumulator, filePath);
     }
 }

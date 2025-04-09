@@ -5,8 +5,12 @@ import com.mycompany.sort.controller.accumulator.AccumulatorValue;
 import com.mycompany.sort.model.SortingStrategy.SortingStrategy;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +44,8 @@ public class SortingGUI extends JFrame {
         JTextField growthFactorField = new JTextField("1.5", 10);
         JButton startButton = new JButton("Iniciar");
         JButton stopButton = new JButton("Detener");
-
+        JButton exportButton = new JButton("Exportar"); // Corregir nombre
+        controlPanel.add(exportButton); // Agregar al panel
         controlPanel.add(new JLabel("Tamaño inicial:"));
         controlPanel.add(initialSizeField);
         controlPanel.add(new JLabel("Factor crecimiento:"));
@@ -58,6 +63,15 @@ public class SortingGUI extends JFrame {
         tabbedPane.addTab("Matrices", new JScrollPane(new JTable(matrixTableModel)));
         add(tabbedPane, BorderLayout.CENTER);
 
+        exportButton.addActionListener(e -> {
+            Component selectedTab = tabbedPane.getSelectedComponent();
+            if (selectedTab instanceof JScrollPane) {
+                JViewport viewport = ((JScrollPane) selectedTab).getViewport();
+                if (viewport.getView() instanceof JTable) {
+                    exportToHTML((JTable) viewport.getView());
+                }
+            }
+        });
         // Listeners de botones
         startButton.addActionListener(e -> {
             try {
@@ -138,6 +152,46 @@ public class SortingGUI extends JFrame {
                 }
             }
             model.addRow(row);
+        }
+    }
+
+    private void exportToHTML(JTable table) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos HTML", "html"));
+
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            if (!file.getName().toLowerCase().endsWith(".html")) {
+                file = new File(file.getParentFile(), file.getName() + ".html");
+            }
+
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write("<html><body>\n");
+                writer.write("<h1>Reporte de Ordenamiento</h1>\n");
+                writer.write("<table border='1'>\n");
+
+                // Encabezados
+                writer.write("<tr>");
+                for (int i = 0; i < table.getColumnCount(); i++) {
+                    writer.write("<th>" + table.getColumnName(i) + "</th>");
+                }
+                writer.write("</tr>\n");
+
+                // Datos
+                for (int row = 0; row < table.getRowCount(); row++) {
+                    writer.write("<tr>");
+                    for (int col = 0; col < table.getColumnCount(); col++) {
+                        writer.write("<td>" + table.getValueAt(row, col) + "</td>");
+                    }
+                    writer.write("</tr>\n");
+                }
+
+                writer.write("</table>\n</body></html>");
+                JOptionPane.showMessageDialog(this, "Datos exportados exitosamente!");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al exportar: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
