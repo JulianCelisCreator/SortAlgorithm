@@ -232,4 +232,8 @@ public class SortingController {
                 result.getFormattedTime()
         );
     }
+
+    public void exportResultsToPdf(String filePath) {
+        com.mycompany.sort.util.PdfExporter.exportToPdf(this.accumulator, filePath);
+    }
 }

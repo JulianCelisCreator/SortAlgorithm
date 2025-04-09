@@ -85,11 +85,11 @@ public class SortResult {
      * @return Cadena legible de tiempo
      */
     public String getFormattedTime() {
-        long totalMillis = (long) timeElapsedMillis;
-        long minutes = totalMillis / 60_000;
-        long seconds = (totalMillis % 60_000) / 1_000;
-        long millis = totalMillis % 1_000;
-        return String.format("%02d:%02d.%03d", minutes, seconds, millis);
+        double totalMillis = timeElapsedMillis;
+        long minutes = (long) (totalMillis / 60_000);
+        long seconds = (long) ((totalMillis % 60_000) / 1_000);
+        double millis = totalMillis % 1_000;
+        return String.format("%02d:%02d.%03.0f", minutes, seconds, millis);
     }
 
     /**
