@@ -9,12 +9,15 @@ import com.mycompany.sort.model.politico.Politico;
 import com.mycompany.sort.model.politico.PoliticoComparator;
 import com.mycompany.sort.model.SortingStrategy.SortResult;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * Controlador principal encargado de orquestar el análisis de distintas
+ * estrategias de ordenamiento sobre conjuntos de datos generados dinámicamente.
+ *
+ * Gestiona la generación de datos, la ejecución de algoritmos de ordenamiento
+ * en estructuras tipo array y matriz, y acumula resultados estadísticos.
+ */
 public class SortingController {
     private final DataGeneratorChain dataGenerator;
     private final List<SortingStrategy> strategies;
@@ -22,6 +25,10 @@ public class SortingController {
     private final MatrixOrganizer matrixOrganizer;
     private final Map<AccumulatorKey, AccumulatorValue> accumulator;
 
+    /**
+     * Constructor por defecto que inicializa las estrategias, el generador de datos,
+     * el organizador de matrices y el mapa de acumuladores.
+     */
     public SortingController() {
         this.dataGenerator = new DataGeneratorChain();
         this.strategies = List.of(
@@ -37,12 +44,21 @@ public class SortingController {
         setupShutdownHook();
     }
 
+    /**
+     * Establece un hook para mostrar resultados acumulados cuando se cierra la aplicación.
+     */
     private void setupShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            displayAccumulatedResults();
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::displayAccumulatedResults));
     }
 
+    /**
+     * Ejecuta el análisis iterativo de las estrategias de ordenamiento con distintos tamaños
+     * de entrada y tipos de caso (ordenado, inverso, aleatorio), incrementando el tamaño
+     * según el factor de crecimiento especificado.
+     *
+     * @param initialSize   Tamaño inicial del conjunto de datos.
+     * @param growthFactor  Factor de crecimiento entre cada iteración.
+     */
     public void runAnalysis(int initialSize, double growthFactor) {
         List<String> dataCases = List.of("SORTED", "INVERSE", "RANDOM");
         int currentSize = initialSize;
@@ -67,6 +83,9 @@ public class SortingController {
         }
     }
 
+    /**
+     * Ejecuta el análisis de ordenamiento sobre arreglos simples (arrays).
+     */
     private void analyzeArrayResults(Politico[] data, int size, String dataCase) {
         System.out.println("\n[RESULTADOS DE ARRAYS]");
         for (SortingStrategy strategy : strategies) {
@@ -85,6 +104,9 @@ public class SortingController {
         }
     }
 
+    /**
+     * Ejecuta el análisis de ordenamiento sobre estructuras de tipo matriz.
+     */
     private void analyzeMatrixResults(Politico[] data, int size, String dataCase) {
         System.out.println("\n[RESULTADOS DE MATRICES]");
         for (SortingStrategy strategy : strategies) {
@@ -115,25 +137,42 @@ public class SortingController {
         }
     }
 
+    /**
+     * Calcula el número de filas para una matriz cuadrada o casi cuadrada.
+     */
     private int calculateRows(int size) {
         return Math.max(1, (int) Math.ceil(Math.sqrt(size)));
     }
 
+    /**
+     * Calcula el número de columnas para una matriz, basado en el tamaño y filas.
+     */
     private int calculateColumns(int size, int rows) {
         return (int) Math.ceil((double) size / rows);
     }
 
+    /**
+     * Actualiza el acumulador global con los datos de un resultado nuevo.
+     *
+     * @param dataCase     Tipo de caso de prueba.
+     * @param dataType     Tipo de estructura de datos ("ARRAY" o "MATRIX").
+     * @param strategyName Nombre de la estrategia usada.
+     * @param result       Resultado de ordenamiento.
+     */
     private void updateAccumulator(String dataCase, String dataType, String strategyName, SortResult result) {
         AccumulatorKey key = new AccumulatorKey(dataCase, dataType, strategyName);
         accumulator.compute(key, (k, v) -> {
             if (v == null) {
                 v = new AccumulatorValue();
             }
-            v.add(result.getIterations(), result.getTimeElapsedMillis());
+            v.add(result.getIterations(), result.getTimeElapsedMillis()); // Pasa double
             return v;
         });
     }
 
+    /**
+     * Imprime los resultados acumulados promedio al terminar la ejecución.
+     */
     private void displayAccumulatedResults() {
         System.out.println("\n=== Resultados Acumulados por Caso, Tipo y Estrategia ===");
         for (Map.Entry<AccumulatorKey, AccumulatorValue> entry : accumulator.entrySet()) {
@@ -150,6 +189,12 @@ public class SortingController {
         }
     }
 
+    /**
+     * Devuelve los resultados acumulados filtrados por tipo de estructura.
+     *
+     * @param dataType tipo de estructura ("ARRAY" o "MATRIX").
+     * @return Mapa anidado [Caso -> Estrategia -> Resultado acumulado].
+     */
     public Map<String, Map<String, AccumulatorValue>> getAccumulatedResults(String dataType) {
         Map<String, Map<String, AccumulatorValue>> results = new HashMap<>();
 
@@ -163,10 +208,20 @@ public class SortingController {
         return results;
     }
 
+    /**
+     * Retorna la lista de estrategias de ordenamiento disponibles.
+     */
     public List<SortingStrategy> getStrategies() {
         return strategies;
     }
 
+    /**
+     * Imprime por consola un resultado individual en formato legible.
+     *
+     * @param type          Tipo de estructura ("Array" o "Matriz").
+     * @param strategyName  Nombre de la estrategia.
+     * @param result        Resultado detallado.
+     */
     private void printResult(String type, String strategyName, SortResult result) {
         System.out.printf(
                 "%-8s %-15s | Tamaño: %,6d | Iteraciones: %,9d | Tiempo: %s%n",

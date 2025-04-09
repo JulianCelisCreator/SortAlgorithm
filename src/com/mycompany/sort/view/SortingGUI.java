@@ -7,16 +7,24 @@ import com.mycompany.sort.model.SortingStrategy.SortingStrategy;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Interfaz gráfica que permite visualizar y comparar el rendimiento de distintas
+ * estrategias de ordenamiento sobre arreglos y matrices de objetos tipo Politico.
+ */
 public class SortingGUI extends JFrame {
     private final SortingController controller;
     private final JTabbedPane tabbedPane;
     private final DefaultTableModel arrayTableModel;
     private final DefaultTableModel matrixTableModel;
 
+    /**
+     * Constructor principal. Inicializa todos los componentes gráficos.
+     *
+     * @param controller Controlador que maneja la lógica de análisis.
+     */
     public SortingGUI(SortingController controller) {
         super("Analizador de Estrategias de Ordenamiento");
         this.controller = controller;
@@ -26,7 +34,7 @@ public class SortingGUI extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Panel superior
+        // Panel superior con controles
         JPanel controlPanel = new JPanel();
         JTextField initialSizeField = new JTextField("1000", 10);
         JTextField growthFactorField = new JTextField("1.5", 10);
@@ -41,17 +49,16 @@ public class SortingGUI extends JFrame {
         controlPanel.add(stopButton);
         add(controlPanel, BorderLayout.NORTH);
 
-        // Tablas
+        // Tablas y pestañas
         tabbedPane = new JTabbedPane();
         arrayTableModel = createTableModel();
         matrixTableModel = createTableModel();
 
         tabbedPane.addTab("Arreglos", new JScrollPane(new JTable(arrayTableModel)));
         tabbedPane.addTab("Matrices", new JScrollPane(new JTable(matrixTableModel)));
-
         add(tabbedPane, BorderLayout.CENTER);
 
-        // Listeners
+        // Listeners de botones
         startButton.addActionListener(e -> {
             try {
                 int initialSize = Integer.parseInt(initialSizeField.getText());
@@ -70,6 +77,11 @@ public class SortingGUI extends JFrame {
         stopButton.addActionListener(e -> updateTables());
     }
 
+    /**
+     * Crea un modelo de tabla con columnas basadas en las estrategias disponibles.
+     *
+     * @return Modelo de tabla con columnas configuradas.
+     */
     private DefaultTableModel createTableModel() {
         List<SortingStrategy> strategies = controller.getStrategies();
         String[] columns = new String[1 + strategies.size() * 2];
@@ -89,11 +101,20 @@ public class SortingGUI extends JFrame {
         };
     }
 
+    /**
+     * Actualiza ambas tablas (arreglos y matrices) con los datos acumulados del análisis.
+     */
     private void updateTables() {
         updateTableModel(arrayTableModel, controller.getAccumulatedResults("ARRAY"));
         updateTableModel(matrixTableModel, controller.getAccumulatedResults("MATRIX"));
     }
 
+    /**
+     * Actualiza el modelo de tabla con los resultados promedios por tipo de caso (RANDOM, SORTED, INVERSE).
+     *
+     * @param model Modelo de tabla a actualizar.
+     * @param data  Datos acumulados organizados por tipo de caso y estrategia.
+     */
     private void updateTableModel(DefaultTableModel model, Map<String, Map<String, AccumulatorValue>> data) {
         model.setRowCount(0);
         List<String> cases = List.of("SORTED", "INVERSE", "RANDOM");
@@ -120,6 +141,11 @@ public class SortingGUI extends JFrame {
         }
     }
 
+    /**
+     * Punto de entrada del programa. Lanza la interfaz gráfica.
+     *
+     * @param args Argumentos del sistema (no utilizados).
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             SortingController controller = new SortingController();

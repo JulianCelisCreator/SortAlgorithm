@@ -4,12 +4,27 @@ import java.util.Comparator;
 
 import com.mycompany.sort.model.politico.Politico;
 
-public class InsertionSortingStrategy implements SortingStrategy{
+/**
+ * Implementación del algoritmo de ordenamiento Insertion Sort.
+ * Este algoritmo construye el arreglo ordenado de izquierda a derecha,
+ * insertando cada nuevo elemento en la posición correcta respecto a los anteriores.
+ */
+public class InsertionSortingStrategy implements SortingStrategy {
+
+    /**
+     * Ordena un arreglo de objetos {@link Politico} usando el algoritmo Insertion Sort
+     * y un comparador definido por el usuario.
+     *
+     * @param arr         el arreglo de políticos a ordenar
+     * @param comparator  el comparador que define el criterio de ordenamiento
+     * @return objeto {@link SortResult} que contiene el número de iteraciones y el tiempo de ejecución
+     */
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         long iterations = 0;
-        long start = System.nanoTime();
+        double start = System.nanoTime();
         int n = arr.length;
+
         for (int i = 1; i < n; i++) {
             Politico key = arr[i];
             int j = i - 1;
@@ -21,18 +36,25 @@ public class InsertionSortingStrategy implements SortingStrategy{
                 j--;
             }
 
-            // Si salió del while sin entrar, igual se cuenta como una iteración de comparación
+            // Si salió del while sin entrar, igual cuenta como una comparación
             if (j >= 0) iterations++;
 
             arr[j + 1] = key;
         }
-        long end = System.nanoTime() - start;
-        long elapsedMillis = end / 1_000_000; //
+
+        double end = System.nanoTime() - start;
+        double elapsedMillis = end / 1_000_000;
+
         return new SortResult(iterations, elapsedMillis);
     }
 
+    /**
+     * Devuelve el nombre legible del algoritmo de ordenamiento.
+     *
+     * @return el nombre "Insertion Sort"
+     */
     @Override
     public String getName() {
-        return "Insertion Sort"; // Nombre legible del algoritmo
+        return "Insertion Sort";
     }
 }

@@ -3,37 +3,55 @@ package com.mycompany.sort.model.SortingStrategy;
 import com.mycompany.sort.model.politico.Politico;
 
 import java.util.Comparator;
-import java.util.Timer;
 
+/**
+ * Implementación del algoritmo de ordenamiento Bubble Sort.
+ * Este algoritmo compara pares adyacentes y los intercambia si están en el orden incorrecto,
+ * repitiendo el proceso hasta que la lista esté ordenada.
+ */
 public class BubbleSortingStrategy implements SortingStrategy {
+
+    /**
+     * Ordena un arreglo de objetos {@link Politico} usando el algoritmo Bubble Sort
+     * y un comparador específico.
+     *
+     * @param arr         el arreglo de políticos a ordenar
+     * @param comparator  el comparador que define el criterio de ordenamiento
+     * @return objeto {@link SortResult} con estadísticas del proceso (iteraciones y tiempo)
+     */
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         long iterations = 0;
-        long start = System.nanoTime();
+        double start = System.nanoTime();
         boolean swapped;
         int n = arr.length;
 
-        for (int i = 0; i < n-1; i++) {
+        for (int i = 0; i < n - 1; i++) {
             swapped = false;
-            for (int j = 0; j < n-i-1; j++) { // Corrección aquí
+            for (int j = 0; j < n - i - 1; j++) {
                 iterations++;
-                if (comparator.compare(arr[j], arr[j+1]) > 0) {
+                if (comparator.compare(arr[j], arr[j + 1]) > 0) {
                     Politico temp = arr[j];
-                    arr[j] = arr[j+1];
-                    arr[j+1] = temp;
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
                     swapped = true;
                 }
             }
-            if (!swapped) break; // Mover fuera del bucle interno
+            if (!swapped) break; // Optimización: si no hubo intercambios, ya está ordenado
         }
-        long end = System.nanoTime() - start;
-        long elapsedMillis = end / 1_000_000; //
+
+        double elapsedMillis = (System.nanoTime() - start) / 1_000_000;
+
         return new SortResult(iterations, elapsedMillis);
     }
 
+    /**
+     * Devuelve el nombre legible del algoritmo de ordenamiento.
+     *
+     * @return nombre del algoritmo ("Bubble Sort")
+     */
     @Override
     public String getName() {
-        return "Bubble Sort"; // Nombre legible del algoritmo
+        return "Bubble Sort";
     }
 }
-

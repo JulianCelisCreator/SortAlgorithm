@@ -1,25 +1,41 @@
 package com.mycompany.sort.model.SortingStrategy;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
-import java.util.Currency;
 
 import com.mycompany.sort.model.politico.Politico;
+
+/**
+ * Implementación del algoritmo Merge Sort para ordenar arreglos de {@link Politico}.
+ * Este algoritmo utiliza el enfoque de divide y vencerás para ordenar eficientemente los datos.
+ */
 public class MergeSortingStrategy implements SortingStrategy {
+
     private long iterations;
 
+    /**
+     * Ordena un arreglo de objetos {@link Politico} usando Merge Sort
+     * y un comparador definido por el usuario.
+     *
+     * @param arr         el arreglo de políticos a ordenar
+     * @param comparator  el comparador que define el criterio de ordenamiento
+     * @return objeto {@link SortResult} con métricas de rendimiento
+     */
     @Override
     public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         iterations = 0;
-        long start = System.nanoTime();
+        double start = System.nanoTime();
 
         mergeSort(arr, 0, arr.length - 1, comparator);
 
-        long end = System.nanoTime() - start;
-        long elapsedMillis = end / 1_000_000; //
+        double end = System.nanoTime() - start;
+        double elapsedMillis = end / 1_000_000;
+
         return new SortResult(iterations, elapsedMillis);
     }
 
+    /**
+     * Método recursivo para dividir el arreglo y aplicar Merge Sort.
+     */
     private void mergeSort(Politico[] arr, int left, int right, Comparator<Politico> comparator) {
         if (left < right) {
             int mid = (left + right) / 2;
@@ -31,6 +47,9 @@ public class MergeSortingStrategy implements SortingStrategy {
         }
     }
 
+    /**
+     * Fusión de dos subarreglos ordenados de {@link Politico} en uno solo ordenado.
+     */
     private void merge(Politico[] arr, int left, int mid, int right, Comparator<Politico> comparator) {
         int n1 = mid - left + 1;
         int n2 = right - mid;
@@ -61,8 +80,13 @@ public class MergeSortingStrategy implements SortingStrategy {
         }
     }
 
+    /**
+     * Devuelve el nombre legible del algoritmo de ordenamiento.
+     *
+     * @return el nombre "Merge Sorting"
+     */
     @Override
     public String getName() {
-        return "Merge Sorting"; // Nombre legible del algoritmo
+        return "Merge Sorting";
     }
 }

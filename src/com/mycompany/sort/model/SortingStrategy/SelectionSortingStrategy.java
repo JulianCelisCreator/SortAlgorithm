@@ -4,12 +4,25 @@ import com.mycompany.sort.model.politico.Politico;
 
 import java.util.Comparator;
 
+/**
+ * Estrategia de ordenamiento que implementa el algoritmo Selection Sort.
+ * Ordena un arreglo de objetos {@link Politico} según el criterio proporcionado por un {@link Comparator}.
+ */
 public class SelectionSortingStrategy implements SortingStrategy {
+
+    /**
+     * Ordena el arreglo utilizando Selection Sort.
+     *
+     * @param arr        el arreglo de políticos a ordenar
+     * @param comparator el comparador que define el criterio de ordenamiento
+     * @return un objeto {@link SortResult} que contiene las estadísticas del ordenamiento
+     */
     @Override
-    public SortResult sort (Politico[] arr, Comparator<Politico> comparator){
+    public SortResult sort(Politico[] arr, Comparator<Politico> comparator) {
         long iterations = 0;
-        long start = System.nanoTime();
+        double start = System.nanoTime();
         int n = arr.length;
+
         for (int i = 0; i < n - 1; i++) {
             int minIndex = i;
 
@@ -20,20 +33,24 @@ public class SelectionSortingStrategy implements SortingStrategy {
                 }
             }
 
-            // Intercambia el mínimo encontrado con la posición actual
             if (minIndex != i) {
                 Politico temp = arr[i];
                 arr[i] = arr[minIndex];
                 arr[minIndex] = temp;
             }
         }
-        long end = System.nanoTime() - start;
-        long elapsedMillis = end / 1_000_000; //
+
+        double elapsedMillis = (System.nanoTime() - start) / 1_000_000;
         return new SortResult(iterations, elapsedMillis);
     }
 
+    /**
+     * Retorna el nombre legible del algoritmo.
+     *
+     * @return "Selection sort"
+     */
     @Override
     public String getName() {
-        return "Selection sort"; // Nombre legible del algoritmo
+        return "Selection sort";
     }
 }
