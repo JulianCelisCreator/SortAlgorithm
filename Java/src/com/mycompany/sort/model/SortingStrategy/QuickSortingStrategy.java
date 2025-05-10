@@ -5,11 +5,13 @@ import com.mycompany.sort.model.politico.Politico;
 import java.util.Comparator;
 import java.util.Stack;
 
+import java.util.Objects;
+
 /**
  * Implementación del algoritmo Quick Sort para ordenar arreglos de {@link Politico}.
  * Utiliza una pila para evitar recursión y selecciona el pivote usando la técnica de mediana de tres.
  */
-public class QuickSortingStrategy implements SortingStrategy {
+public class QuickSortingStrategy<T extends Comparable<T>> implements SortingStrategy {
 
     private long iterations;
 
@@ -94,6 +96,105 @@ public class QuickSortingStrategy implements SortingStrategy {
         arr[j] = temp;
     }
 
+    @Override
+    public SortResult sort(ListaEnlazadaSimple<T> lista) {
+        Objects.requireNonNull(lista, "La lista a ordenar no puede ser null.");
+
+        iterations = 0;
+        double start = System.nanoTime();
+        int n = lista.getTamanno();
+
+        if (n <= 1) {
+            return;
+        }
+
+        Nodo<T> cabeza = lista.getCabeza();
+        Nodo<T> cola = encontrarCola(cabeza); 
+        quickSortRecursivo(cabeza, cola);
+
+        lista.setCabeza(cabeza);
+        double elapsedMillis = (System.nanoTime() - start) / 1_000_000;
+        return new SortResult(iterations, elapsedMillis);
+    }
+
+    private Nodo<T> encontrarCola(Nodo<T> nodo) {
+        if (nodo == null) {
+            return null;
+        }
+        while (nodo.getSiguiente() != null) {
+            nodo = nodo.getSiguiente();
+        }
+        return nodo;
+    }
+
+    private void quickSortRecursivo(Nodo<T> cabezaSubLista, Nodo<T> colaSubLista) {
+
+        if (cabezaSubLista == null || colaSubLista == null || cabezaSubLista == colaSubLista || cabezaSubLista == colaSubLista.getSiguiente()) {
+            return;
+        }
+
+        Nodo<T>[] resultadoParticion = particionar(cabezaSubLista, colaSubLista);
+        Nodo<T> nodoPivoteFinal = resultadoParticion[0];
+        Nodo<T> nodoAntesPivote = resultadoParticion[1];
+
+        if (nodoAntesPivote != null && nodoPivoteFinal != cabezaSubLista) {
+           quickSortRecursivo(cabezaSubLista, nodoAntesPivote);
+        } else if (nodoAntesPivote == null && nodoPivoteFinal != cabezaSubLista){
+        }
+
+         if (nodoPivoteFinal != null && nodoPivoteFinal != colaSubLista) { 
+             quickSortRecursivo(nodoPivoteFinal.getSiguiente(), colaSubLista);
+         }
+    }
+
+    private Nodo<T>[] particionar(Nodo<T> cabeza, Nodo<T> cola) {
+        T valorPivote = cola.getDato();
+
+        Nodo<T> i = null;
+        Nodo<T> actual = cabeza;
+
+        while (actual != cola) {
+            if (actual.getDato().compareTo(valorPivote) > 0) {
+                i = (i == null) ? cabeza : i.getSiguiente(); 
+                T temp = actual.getDato();
+                try {
+                     actual.setDato(i.getDato());
+                     i.setDato(temp);
+                } catch (Exception e) {
+                     throw new UnsupportedOperationException(
+                         "La partición de QuickSort requiere un método setDato(T) en la clase Nodo.", e);
+                }
+            }
+            actual = actual.getSiguiente(); 
+        }
+
+        i = (i == null) ? cabeza : i.getSiguiente(); 
+        T temp = cola.getDato();
+         try {
+            cola.setDato(i.getDato());
+            i.setDato(temp);
+         } catch (Exception e) {
+            throw new UnsupportedOperationException(
+                "La partición de QuickSort requiere un método setDato(T) en la clase Nodo.", e);
+         }
+
+
+        Nodo<T> nodoAntesPivote = null;
+        if (i != cabeza) {
+            Nodo<T> buscador = cabeza;
+            while (buscador != null && buscador.getSiguiente() != i) {
+                buscador = buscador.getSiguiente();
+            }
+            nodoAntesPivote = buscador;
+        }
+
+        @SuppressWarnings("unchecked")
+        Nodo<T>[] resultado = (Nodo<T>[]) new Nodo<?>[2];
+        resultado[0] = i;               
+        resultado[1] = nodoAntesPivote; 
+        return resultado;
+    }
+
     /**
      * Retorna el nombre legible del algoritmo.
      *
@@ -101,6 +202,6 @@ public class QuickSortingStrategy implements SortingStrategy {
      */
     @Override
     public String getName() {
-        return "Quick Sort";
+        return "Quick Sort lista enlazada simple";
     }
 }

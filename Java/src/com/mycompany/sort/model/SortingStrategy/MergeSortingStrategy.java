@@ -4,11 +4,13 @@ import java.util.Comparator;
 
 import com.mycompany.sort.model.politico.Politico;
 
+import java.util.Objects;
+
 /**
  * Implementación del algoritmo Merge Sort para ordenar arreglos de {@link Politico}.
  * Este algoritmo utiliza el enfoque de divide y vencerás para ordenar eficientemente los datos.
  */
-public class MergeSortingStrategy implements SortingStrategy {
+public class MergeSortingStrategy<T extends Comparable<T>> implements SortingStrategy {
 
     private long iterations;
 
@@ -80,6 +82,72 @@ public class MergeSortingStrategy implements SortingStrategy {
         }
     }
 
+    @Override
+    public SortResult sort(ListaEnlazadaSimple<T> lista) {
+        Objects.requireNonNull(lista, "La lista a ordenar no puede ser null.");
+
+        iterations = 0;
+        double start = System.nanoTime();
+        int n = lista.getTamanno();
+        if (n <= 1) {
+            return new SortResult(iterations, 0); 
+        }
+
+        Nodo<T> nuevaCabeza = mergeSortRecursivo(lista.getCabeza());
+
+        lista.setCabeza(nuevaCabeza);
+        double end = System.nanoTime() - start;
+        double elapsedMillis = end / 1_000_000;
+
+        return new SortResult(iterations, elapsedMillis);
+    }
+
+    private Nodo<T> mergeSortRecursivo(Nodo<T> cabeza) {
+        if (cabeza == null || cabeza.getSiguiente() == null) {
+            return cabeza;
+        }
+
+        Nodo<T> medio = encontrarMedio(cabeza);
+        Nodo<T> segundaMitadCabeza = medio.getSiguiente();
+        medio.setSiguiente(null);
+
+        Nodo<T> izquierdaOrdenada = mergeSortRecursivo(cabeza);
+        Nodo<T> derechaOrdenada = mergeSortRecursivo(segundaMitadCabeza);
+
+        return fusionar(izquierdaOrdenada, derechaOrdenada);
+    }
+
+    private Nodo<T> encontrarMedio(Nodo<T> cabeza) {
+        Nodo<T> lento = cabeza;
+        Nodo<T> rapido = cabeza.getSiguiente();
+
+        while (rapido != null && rapido.getSiguiente() != null) {
+            lento = lento.getSiguiente();
+            rapido = rapido.getSiguiente().getSiguiente();
+        }
+        return lento;
+    }
+
+    private Nodo<T> fusionar(Nodo<T> izquierda, Nodo<T> derecha) {
+        if (izquierda == null) {
+            return derecha;
+        }
+        if (derecha == null) {
+            return izquierda;
+        }
+
+        Nodo<T> cabezaResultado;
+
+        if (izquierda.getDato().compareTo(derecha.getDato()) >= 0) {
+            cabezaResultado = izquierda;
+            cabezaResultado.setSiguiente(fusionar(izquierda.getSiguiente(), derecha));
+        } else {
+            cabezaResultado = derecha;
+            cabezaResultado.setSiguiente(fusionar(izquierda, derecha.getSiguiente()));
+        }
+        return cabezaResultado;
+    }
+
     /**
      * Devuelve el nombre legible del algoritmo de ordenamiento.
      *
@@ -87,6 +155,6 @@ public class MergeSortingStrategy implements SortingStrategy {
      */
     @Override
     public String getName() {
-        return "Merge Sorting";
+        return "Merge Sorting lista enlazada simple";
     }
 }

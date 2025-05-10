@@ -5,18 +5,17 @@ import com.mycompany.sort.model.politico.Politico;
 import java.util.Comparator;
 
 /**
- * Interfaz que define el contrato para estrategias de ordenamiento aplicadas a arreglos de {@link Politico}.
+ * Interfaz que define el contrato para estrategias de ordenamiento aplicadas a listas enlazadas simples de {@link Politico}.
  */
-public interface SortingStrategy {
+public interface SortingStrategy<T> {
 
     /**
-     * Ordena el arreglo de políticos utilizando un comparador específico.
+     * Ordena la lista enlazada simple de políticos.
      *
-     * @param data       el arreglo de políticos a ordenar
-     * @param comparator el comparador que define el criterio de ordenamiento
+     * @param data       lista enlazada simple de políticos a ordenar
      * @return un {@link SortResult} que contiene información sobre el rendimiento del algoritmo
      */
-    SortResult sort(Politico[] data, Comparator<Politico> comparator);
+    SortResult sort(ListaEnlazadaSimple<T> lista);
 
     /**
      * Devuelve el nombre del algoritmo de ordenamiento.
