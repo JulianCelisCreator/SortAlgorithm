@@ -8,8 +8,6 @@ import com.mycompany.sort.model.matrix.MatrixOrganizer;
 import com.mycompany.sort.model.politico.Politico;
 import com.mycompany.sort.model.politico.PoliticoComparator;
 import com.mycompany.sort.model.SortingStrategy.SortResult;
-import com.mycompany.sort.model.SortingStrategyListaCircular.*;
-import com.mycompany.sort.model.SortingStrategyListaEnlazadaDoble.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -29,8 +27,6 @@ import java.util.*;
 public class SortingController {
     private final DataGeneratorChain dataGenerator;
     private final List<SortingStrategy> strategies;
-    private final List<SortingStrategyListaCircular> strategiesListaCircular;
-    private final List<SortingStrategyEnlazadaDoble> strategiesListaEnlazadaDoble;
     private final List<SortResult> results;
     private final MatrixOrganizer matrixOrganizer;
     private final Map<AccumulatorKey, AccumulatorValue> accumulator;
@@ -47,20 +43,6 @@ public class SortingController {
                 new InsertionSortingStrategy(),
                 new MergeSortingStrategy(),
                 new QuickSortingStrategy()
-        );
-        this.strategiesListaCircular = List.of(
-            new BubbleSortingListaCircular(),
-            new InsertionSortingListaCircular(),
-            new MergeSortingListaCircular(),
-            new QuickSortingListaCircular(),
-            new SelectionSortingListaCircular()
-        );
-        this.strategiesListaEnlazadaDoble = List.of(
-            new BubbleSortingListaEnlazadaDoble(),
-            new InsertionSortingListaEnlazadaDoble(),
-            new MergeSortingListaEnlazadaDoble(),
-            new QuickSortingListaEnlazadaDoble(),
-            new SelectionSortingListaEnlazadaDoble()
         );
         this.results = new ArrayList<>();
         this.matrixOrganizer = new MatrixOrganizer();

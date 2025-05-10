@@ -2,15 +2,13 @@ package com.mycompany.sort.model.politico;
 
 import java.time.LocalDate;
 
-import java.util.Objects;
-
 /**
  * Representa un político con dos atributos: dinero y fecha de nacimiento (o cualquier fecha relevante).
  *
  * Esta clase es inmutable: sus atributos son finales y no posee setters.
  * Se utiliza como entidad base para aplicar diferentes estrategias de ordenamiento.
  */
-public class Politico implements Comparable<Politico>{
+public class Politico {
     private final int dinero;
     private final LocalDate fecha;
 
@@ -52,11 +50,4 @@ public class Politico implements Comparable<Politico>{
     public String toString() {
         return String.format("$%,d - %s", dinero, fecha.toString());
     }
-
-    @Override
-    public int compareTo(Politico other) {
-    Objects.requireNonNull(other, "No se puede comparar con un Politico null.");
-    return Integer.compare(this.dinero, other.dinero);
-}
-
 }
